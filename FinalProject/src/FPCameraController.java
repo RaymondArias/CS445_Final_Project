@@ -114,6 +114,7 @@ public class FPCameraController {
 
     public void gameLoop() {
         FPCameraController camera = new FPCameraController(0, 0, -10);
+        Chunk chunk = new Chunk(0, 0, -10);
         float dx = 0f;
         float dy = 0f;
         float dt = 0f;
@@ -152,7 +153,7 @@ public class FPCameraController {
             glLoadIdentity();
             camera.lookThrough();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            render();
+            chunk.render();
             Display.update();
             Display.sync(60);
         }

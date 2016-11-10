@@ -1,5 +1,3 @@
-
-import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -53,8 +51,11 @@ public class MainDriver {
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        GLU.gluPerspective(100.0f, 
-                (float) displayMode.getWidth()/(float)displayMode.getHeight(),
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_COLOR_ARRAY);
+        glEnable(GL_DEPTH_TEST);
+        GLU.gluPerspective(100.0f,
+                (float) displayMode.getWidth() / (float) displayMode.getHeight(),
                 0.1f, 300.0f);
         glMatrixMode(GL_MODELVIEW);
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
