@@ -1,4 +1,15 @@
-
+/***************************************************************
+* file: Chunk.java
+* author: Justin Buth, Raymond Arias
+* class: CS 445 Computer Graphics
+*
+* assignment: Final Project
+* date last modified: 11/15/2016
+*
+* purpose: This class creates chunks and adds textures to them from terrain.png.
+* Simplex noise is used to randomly generate the terrain.
+*
+****************************************************************/ 
 import java.nio.FloatBuffer;
 import java.util.Random;
 import org.lwjgl.BufferUtils;
@@ -24,6 +35,47 @@ public class Chunk {
     private int VBOTextureHandle;
     private Texture texture;
 
+    // method: Chunk
+    // Purpose: Creates a 30x30x30 chunk of blocks and randomly adds texture to each cube.
+    public Chunk(int startX, int startY, int startZ) {
+        
+        try{
+            texture = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("terrain.png"));
+        } 
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        r = new Random();
+        Blocks = new Block[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
+        for (int x = 0; x < CHUNK_SIZE; x++) {
+            for (int y = 0; y < CHUNK_SIZE; y++) {
+                for (int z = 0; z < CHUNK_SIZE; z++) {
+                    if (r.nextFloat() > 0.7f) {
+                        Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Grass);
+                    } else if (r.nextFloat() > 0.4f) {
+                        Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Dirt);
+                    } else if (r.nextFloat() > 0.2f) {
+                        Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Water);
+                    } else {
+                        Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Sand);
+                    }
+                }
+            }
+        }
+        VBOColorHandle = glGenBuffers();
+        VBOVertexHandle = glGenBuffers();
+        
+        VBOTextureHandle = glGenBuffers();
+        
+        StartX = startX;
+        StartY = startY;
+        StartZ = startZ;
+        rebuildMesh(startX, startY, startZ);
+    }
+    
+    // method: render
+    // Purpose: Calls the needed opengl functions.
     public void render() {
         glPushMatrix();
         glPushMatrix();
@@ -44,6 +96,8 @@ public class Chunk {
         glPopMatrix();
     }
 
+    // method: rebuildMesh
+    // Purpose: Creates variation in the terrain by simplex noise.
     public void rebuildMesh(float startX, float startY, float startZ) {
          // Slide 27 of Noise Generation powerpoint
         int seed = r.nextInt(5000 - 300 + 1) + 300;
@@ -59,18 +113,12 @@ public class Chunk {
         FloatBuffer VertextTextureData 
                 = BufferUtils.createFloatBuffer((CHUNK_SIZE*CHUNK_SIZE*CHUNK_SIZE)*6*12);
         
-       
-        
         for (int x = 0; x < CHUNK_SIZE; x++) {
             for (int z = 0; z < CHUNK_SIZE; z++) {
                 int i = (int)(startX + x * ((300 - startX) / 640));
                 int j = (int)(startZ + z * ((300 - startZ) / 480));
                 float height = (startY + (int)(100 * noise.getNoise(i,j)) * CUBE_LENGTH);
                 for (int y = 0; y <= height; y++) {
-                    
-                    // idk if the following line belongs here. From slide 28 of Noise Generation powerpoint.
-                    //height = (int)(startY + (int)(100*noise.getNoise(x, y, z)) * CUBE_LENGTH);
-     
                     
                     VertexPositionData.put(
                             createCube((float) (startX + x
@@ -86,8 +134,7 @@ public class Chunk {
                                             Blocks[(int) x][(int) y][(int) z])));
                     
                     VertextTextureData.put(createTexCube((float) 0, (float) 0, Blocks[(int)(x)][(int)(y)][(int)(z)]));
-                    
-                    
+
                 }
             }
         }
@@ -108,6 +155,8 @@ public class Chunk {
 
     }
     
+    // method: createTexCube
+    // purpose: Adds texture to the cube based on its block id.
     public static float[] createTexCube(float x, float y, Block block) {
         float offset = (1024f / 16) / 1024f;
 
@@ -342,7 +391,9 @@ public class Chunk {
                 };
         }
     }
-  
+    
+    // method: createCubeVertexCol
+    // purpose: Creates cube vertex col
     private float[] createCubeVertexCol(float[] cubeColorArray) {
         float[] cubeColors = new float[cubeColorArray.length * 4 * 6];
         for (int i = 0; i < cubeColors.length; i++) {
@@ -352,6 +403,8 @@ public class Chunk {
         return cubeColors;
     }
 
+    // method: createCube
+    // purpose: Creates a cube.
     public static float[] createCube(float x, float y, float z) {
         int offset = CUBE_LENGTH / 2;
         return new float[]{
@@ -388,44 +441,11 @@ public class Chunk {
 
     }
 
+    // method: getCubeColor
+    // purpose: Returns a black cube.
     private float[] getCubeColor(Block block) {
         return new float[]{1, 1, 1};
     }
 
-    public Chunk(int startX, int startY, int startZ) {
-        
-        try{
-            texture = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("terrain.png"));
-        } 
-        catch(Exception e){
-            e.printStackTrace();
-        }
-        
-        r = new Random();
-        Blocks = new Block[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
-        for (int x = 0; x < CHUNK_SIZE; x++) {
-            for (int y = 0; y < CHUNK_SIZE; y++) {
-                for (int z = 0; z < CHUNK_SIZE; z++) {
-                    if (r.nextFloat() > 0.7f) {
-                        Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Grass);
-                    } else if (r.nextFloat() > 0.4f) {
-                        Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Dirt);
-                    } else if (r.nextFloat() > 0.2f) {
-                        Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Water);
-                    } else {
-                        Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Sand);
-                    }
-                }
-            }
-        }
-        VBOColorHandle = glGenBuffers();
-        VBOVertexHandle = glGenBuffers();
-        
-        VBOTextureHandle = glGenBuffers();
-        
-        StartX = startX;
-        StartY = startY;
-        StartZ = startZ;
-        rebuildMesh(startX, startY, startZ);
-    }
+    
 }
