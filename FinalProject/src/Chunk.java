@@ -1,4 +1,3 @@
-package cs445_final_project;
 
 import java.nio.FloatBuffer;
 import java.util.Random;
@@ -46,6 +45,9 @@ public class Chunk {
     }
 
     public void rebuildMesh(float startX, float startY, float startZ) {
+         // Slide 27 of Noise Generation powerpoint
+        int seed = r.nextInt(5000 - 300 + 1) + 300;
+        SimplexNoise noise = new SimplexNoise(50, .048711 , seed);
         VBOColorHandle = glGenBuffers();
         VBOVertexHandle = glGenBuffers();
         VBOTextureHandle = glGenBuffers();
@@ -57,25 +59,24 @@ public class Chunk {
         FloatBuffer VertextTextureData 
                 = BufferUtils.createFloatBuffer((CHUNK_SIZE*CHUNK_SIZE*CHUNK_SIZE)*6*12);
         
-        // Slide 27 of Noise Generation powerpoint
-        SimplexNoise noise = new SimplexNoise(10, .2 , 1);
-        int height = 0;
+       
         
-        for (int x = 0; x < CHUNK_SIZE; x += 1) {
-            for (int z = 0; z < CHUNK_SIZE; z += 1) {
-                for (int y = 0; y < CHUNK_SIZE; y++) {
+        for (int x = 0; x < CHUNK_SIZE; x++) {
+            for (int z = 0; z < CHUNK_SIZE; z++) {
+                int i = (int)(startX + x * ((300 - startX) / 640));
+                int j = (int)(startZ + z * ((300 - startZ) / 480));
+                float height = (startY + (int)(100 * noise.getNoise(i,j)) * CUBE_LENGTH);
+                for (int y = 0; y <= height; y++) {
                     
                     // idk if the following line belongs here. From slide 28 of Noise Generation powerpoint.
-                    height = (int)(startY + (int)(100*noise.getNoise(x, y, z)) * CUBE_LENGTH);
+                    //height = (int)(startY + (int)(100*noise.getNoise(x, y, z)) * CUBE_LENGTH);
      
-                    // my attempt at slide 30. I dont get it
-                    if (y < height){
                     
                     VertexPositionData.put(
                             createCube((float) (startX + x
                                     * CUBE_LENGTH),
                                     (float) (y * CUBE_LENGTH
-                                    + (int) (CHUNK_SIZE * .8)),
+                                    + (int) (CHUNK_SIZE * -.2)),
                                     (float) (startZ + z
                                     * CUBE_LENGTH)));
                     
@@ -85,7 +86,7 @@ public class Chunk {
                                             Blocks[(int) x][(int) y][(int) z])));
                     
                     VertextTextureData.put(createTexCube((float) 0, (float) 0, Blocks[(int)(x)][(int)(y)][(int)(z)]));
-                    }
+                    
                     
                 }
             }
@@ -399,7 +400,6 @@ public class Chunk {
         catch(Exception e){
             e.printStackTrace();
         }
-        
         
         r = new Random();
         Blocks = new Block[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
