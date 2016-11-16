@@ -1,4 +1,14 @@
-
+/***************************************************************
+* file: FPCameraController.java
+* author: Raymond Arias and Justin Buth
+* class: CS 445 – Computer Graphics
+*
+* assignment: Final Project
+* date last modified: 11/15/2016
+*
+* purpose: Class which acts as the camera to project
+*
+****************************************************************/
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -13,7 +23,10 @@ public class FPCameraController {
     private float yaw;
     private float pitch;
     private Vector3Float me;
-
+    /**
+    * Method: FPCameraController
+    * Purpose: constructor for FPCameriaController
+    */
     public FPCameraController(float x, float y, float z) {
         this.position = new Vector3f(x, y, z);
         this.lPosition = new Vector3f(x, y, z);
@@ -21,97 +34,157 @@ public class FPCameraController {
         lPosition.y = 15.0f;
         lPosition.z = 0.0f;
     }
-
+    /**
+    * Method: getPosition
+    * Purpose: return position
+    */
     public Vector3f getPosition() {
         return position;
     }
-
+    /**
+    * Method: setPosition
+    * Purpose: sets the position
+    */
     public void setPosition(Vector3f position) {
         this.position = position;
     }
-
+    /**
+    * Method: getlPosition
+    * Purpose: get l the position
+    */
     public Vector3f getlPosition() {
         return lPosition;
     }
-
+    /**
+    * Method: setlPosition
+    * Purpose: set l the position
+    */
     public void setlPosition(Vector3f lPosition) {
         this.lPosition = lPosition;
     }
-
+    /**
+    * Method: getYaw
+    * Purpose: get the yaw position
+    */
     public float getYaw() {
         return yaw;
     }
-
+    /**
+    * Method: setYaw
+    * Purpose: set the yaw amount
+    */
     public void setYaw(float yaw) {
         this.yaw = yaw;
     }
-
+    /**
+    * Method: getPitch
+    * Purpose: get the pitch amount
+    */
     public float getPitch() {
         return pitch;
     }
-
+    /**
+    * Method: setPitch
+    * Purpose: set the pitch amount
+    */
     public void setPitch(float pitch) {
         this.pitch = pitch;
     }
-
+    /**
+    * Method: getMe
+    * Purpose: get position of camera
+    */
     public Vector3Float getMe() {
         return me;
     }
-
+    /**
+    * Method: setMe
+    * Purpose: set position of camera
+    */
     public void setMe(Vector3Float me) {
         this.me = me;
     }
-
+    /**
+    * Method: yaw
+    * Purpose: change yaw amount
+    */
     public void yaw(float amount) {
         this.yaw += amount;
     }
-
+    /**
+    * Method: pitch
+    * Purpose: change pitch amount
+    */
     public void pitch(float amount) {
         this.pitch -= amount;
     }
-
+    /**
+    * Method: walkForward
+    * Purpose: move camera forward
+    */
     public void walkForward(float distance) {
         float xOffset = distance * (float) Math.sin(Math.toRadians(yaw));
         float zOffset = distance * (float) Math.cos(Math.toRadians(yaw));
         position.x -= xOffset;
         position.z += zOffset;
     }
-
+    /**
+    * Method: walkBackwards
+    * Purpose: move the camera backward
+    */
     public void walkBackwards(float distance) {
         float xOffset = distance * (float) Math.sin(Math.toRadians(yaw));
         float zOffset = distance * (float) Math.cos(Math.toRadians(yaw));
         position.x += xOffset;
         position.z -= zOffset;
     }
-
+    /**
+    * Method: strafeLeft
+    * Purpose: move camera left
+    */
     public void strafeLeft(float distance) {
         float xOffset = distance * (float) Math.sin(Math.toRadians(yaw - 90));
         float zOffset = distance * (float) Math.cos(Math.toRadians(yaw - 90));
         position.x -= xOffset;
         position.z += zOffset;
     }
-
+    /**
+    * Method: strafeRight
+    * Purpose: move camera right
+    */
     public void strafeRight(float distance) {
         float xOffset = distance * (float) Math.sin(Math.toRadians(yaw + 90));
         float zOffset = distance * (float) Math.cos(Math.toRadians(yaw + 90));
         position.x -= xOffset;
         position.z += zOffset;
     }
-
+    /**
+    * Method: moveUp
+    * Purpose: move camera up
+    */
     public void moveUp(float distance) {
         position.y -= distance;
     }
-
+    /**
+    * Method: moveDown
+    * Purpose: move camera down
+    */
     public void moveDown(float distance) {
         position.y += distance;
     }
-
+    /**
+    * Method: lookThrough
+    * Purpose: move all objects on screen
+    */
     public void lookThrough() {
         glRotatef(pitch, 1.0f, 0.0f, 0.0f);
         glRotatef(yaw, 0.0f, 1.0f, 0.0f);
         glTranslatef(position.x, position.y, position.z);
     }
-
+    /**
+    * Method: gameLoop
+    * Purpose: main loop for program
+    */
     public void gameLoop() {
         FPCameraController camera = new FPCameraController(0, 0, -10);
         Chunk chunk = new Chunk(0, 0, -10);
@@ -159,7 +232,10 @@ public class FPCameraController {
         }
         Display.destroy();
     }
-
+    /**
+    * Method: render
+    * Purpose: render cube
+    */
     public void render() {
         try {
             
