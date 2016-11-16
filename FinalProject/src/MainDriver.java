@@ -59,6 +59,8 @@ public class MainDriver {
                 0.1f, 300.0f);
         glMatrixMode(GL_MODELVIEW);
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+        glEnable(GL_TEXTURE_2D);
+        glEnableClientState (GL_TEXTURE_COORD_ARRAY);
     }
     /*
      Method: render
