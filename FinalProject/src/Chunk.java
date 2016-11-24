@@ -46,12 +46,12 @@ public class Chunk {
             e.printStackTrace();
         }
         
-        r = new Random();
+        r = new Random(System.currentTimeMillis());
         Blocks = new Block[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
         for (int x = 0; x < CHUNK_SIZE; x++) {
             for (int y = 0; y < CHUNK_SIZE; y++) {
                 for (int z = 0; z < CHUNK_SIZE; z++) {
-                    if (r.nextFloat() > 0.7f) {
+                   if (r.nextFloat() > 0.7f) {
                         Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Grass);
                     } else if (r.nextFloat() > 0.4f) {
                         Blocks[x][y][z] = new Block(Block.BlockType.BlockType_Dirt);
@@ -101,7 +101,7 @@ public class Chunk {
     public void rebuildMesh(float startX, float startY, float startZ) {
          // Slide 27 of Noise Generation powerpoint
         int seed = r.nextInt(5000 - 300 + 1) + 300;
-        SimplexNoise noise = new SimplexNoise(50, .048711 , seed);
+        SimplexNoise noise = new SimplexNoise(30, .05 , seed);
         VBOColorHandle = glGenBuffers();
         VBOVertexHandle = glGenBuffers();
         VBOTextureHandle = glGenBuffers();
@@ -124,7 +124,7 @@ public class Chunk {
                             createCube((float) (startX + x
                                     * CUBE_LENGTH),
                                     (float) (y * CUBE_LENGTH
-                                    + (int) (CHUNK_SIZE * -.2)),
+                                    + (int) (CHUNK_SIZE * -.256)),
                                     (float) (startZ + z
                                     * CUBE_LENGTH)));
                     
@@ -132,8 +132,43 @@ public class Chunk {
                             createCubeVertexCol(
                                     getCubeColor(
                                             Blocks[(int) x][(int) y][(int) z])));
+                    if(y == height)
+                    {
+                        float rand = r.nextFloat();
+                        if(rand < 0.33f)
+                        {
+                            VertextTextureData.put(createTexCube((float) 0, (float) 0, new Block(Block.BlockType.BlockType_Grass)));
+                        }
+                        else if(rand > 0.66f)
+                        {
+                            VertextTextureData.put(createTexCube((float) 0, (float) 0, new Block(Block.BlockType.BlockType_Sand)));
+                        }
+                        else 
+                        {
+                            VertextTextureData.put(createTexCube((float) 0, (float) 0, new Block(Block.BlockType.BlockType_Water)));
+                        }
+                        
+                    }
+                    else if(y == 0)
+                    {
+                        VertextTextureData.put(createTexCube((float) 0, (float) 0, new Block(Block.BlockType.BlockType_Bedrock)));
+                    }
+                    else
+                    {
+                        float rand = r.nextFloat();
+                        if(rand < .50)
+                        {
+                            VertextTextureData.put(createTexCube((float) 0, (float) 0, new Block(Block.BlockType.BlockType_Stone)));
+                        }
+                        else
+                        {
+                            VertextTextureData.put(createTexCube((float) 0, (float) 0, new Block(Block.BlockType.BlockType_Dirt)));
+                        }
+                        
+                    }
                     
-                    VertextTextureData.put(createTexCube((float) 0, (float) 0, Blocks[(int)(x)][(int)(y)][(int)(z)]));
+                    
+                    
 
                 }
             }
