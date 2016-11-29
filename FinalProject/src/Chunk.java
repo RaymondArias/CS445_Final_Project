@@ -10,6 +10,7 @@
 * Simplex noise is used to randomly generate the terrain.
 *
 ****************************************************************/ 
+
 import java.nio.FloatBuffer;
 import java.util.Random;
 import org.lwjgl.BufferUtils;
@@ -22,7 +23,7 @@ import org.newdawn.slick.util.ResourceLoader;
 
 public class Chunk {
 
-    static final int CHUNK_SIZE = 30;
+    static final int CHUNK_SIZE = 90;
     static final int CUBE_LENGTH = 2;
     private Block[][][] Blocks;
     private int VBOVertexHandle;
@@ -63,6 +64,7 @@ public class Chunk {
                 }
             }
         }
+      
         VBOColorHandle = glGenBuffers();
         VBOVertexHandle = glGenBuffers();
         
@@ -126,7 +128,7 @@ public class Chunk {
                                     (float) (y * CUBE_LENGTH
                                     + (int) (CHUNK_SIZE * -.256)),
                                     (float) (startZ + z
-                                    * CUBE_LENGTH)));
+                                    * CUBE_LENGTH)-(CHUNK_SIZE)));
                     
                     VertexColorData.put(
                             createCubeVertexCol(
