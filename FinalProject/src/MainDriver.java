@@ -10,16 +10,22 @@
 *
 ****************************************************************/ 
 
+import java.nio.FloatBuffer;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.util.glu.GLU;
 
+
 public class MainDriver {
     private FPCameraController fp;
     private DisplayMode displayMode;
-    
+    private FloatBuffer whiteLight;
+    private FloatBuffer lightPosition;
+    private FloatBuffer ambientLight;
+
     //Method: start
     //Purpose: Intitiliazes the gui window and calls 
     //render to draw shapes 
@@ -60,6 +66,16 @@ public class MainDriver {
      Purpose: set openGL with intitial values
      */
     private void initGL() {
+        // Lighting variables // 
+        initLightArrays();
+        glLight(GL_LIGHT0, GL_POSITION, lightPosition); 
+        glLight(GL_LIGHT0, GL_SPECULAR, whiteLight);
+        glLight(GL_LIGHT0, GL_DIFFUSE, whiteLight);
+        glLight(GL_LIGHT0, GL_AMBIENT, ambientLight);
+        //glLight(GL_LIGHT0, GL_SPOT_DIRECTION, lightDirection);
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);
+ 
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
@@ -73,6 +89,19 @@ public class MainDriver {
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
         glEnable(GL_TEXTURE_2D);
         glEnableClientState (GL_TEXTURE_COORD_ARRAY);
+        
+    }
+    
+    private void initLightArrays(){
+        lightPosition = BufferUtils.createFloatBuffer(4);
+        lightPosition.put(0.0f).put(0.0f).put(0.5f).put(1.0f).flip();
+        
+        whiteLight = BufferUtils.createFloatBuffer(4);
+        whiteLight.put(9.0f).put(9.0f).put(9.0f).put(0.0f).flip();
+        
+        ambientLight = BufferUtils.createFloatBuffer(4);
+        ambientLight.put(0.5f).put(0.5f).put(0.5f).put(0.0f).flip();
+
     }
     
     /*

@@ -9,12 +9,16 @@
 * purpose: Class which acts as the camera to project
 *
 ****************************************************************/
+//package cs445_final_project;
+
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.util.vector.Vector3f;
+import java.nio.FloatBuffer;
+import org.lwjgl.BufferUtils;
 
 public class FPCameraController {
 
@@ -127,6 +131,12 @@ public class FPCameraController {
         float zOffset = distance * (float) Math.cos(Math.toRadians(yaw));
         position.x -= xOffset;
         position.z += zOffset;
+        
+        /*FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
+        lightPosition.put(lPosition.x-=xOffset).put(
+        lPosition.y).put(lPosition.z+=zOffset).put(1.0f).flip();
+        glLight(GL_LIGHT0, GL_POSITION, lightPosition);*/
+        
     }
     /**
     * Method: walkBackwards
@@ -137,6 +147,13 @@ public class FPCameraController {
         float zOffset = distance * (float) Math.cos(Math.toRadians(yaw));
         position.x += xOffset;
         position.z -= zOffset;
+        
+        /*FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
+        lightPosition.put(lPosition.x-=xOffset).put(
+        lPosition.y).put(lPosition.z+=zOffset).put(1.0f).flip();
+        glLight(GL_LIGHT0, GL_POSITION, lightPosition);*/
+        
+        
     }
     /**
     * Method: strafeLeft
@@ -147,6 +164,11 @@ public class FPCameraController {
         float zOffset = distance * (float) Math.cos(Math.toRadians(yaw - 90));
         position.x -= xOffset;
         position.z += zOffset;
+        
+       /* FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
+        lightPosition.put(lPosition.x-=xOffset).put(
+        lPosition.y).put(lPosition.z+=zOffset).put(1.0f).flip();
+        glLight(GL_LIGHT0, GL_POSITION, lightPosition);*/
     }
     /**
     * Method: strafeRight
@@ -157,6 +179,11 @@ public class FPCameraController {
         float zOffset = distance * (float) Math.cos(Math.toRadians(yaw + 90));
         position.x -= xOffset;
         position.z += zOffset;
+        
+        /*FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
+        lightPosition.put(lPosition.x-=xOffset).put(
+        lPosition.y).put(lPosition.z+=zOffset).put(1.0f).flip();
+        glLight(GL_LIGHT0, GL_POSITION, lightPosition);*/
     }
     /**
     * Method: moveUp
@@ -180,6 +207,12 @@ public class FPCameraController {
         glRotatef(pitch, 1.0f, 0.0f, 0.0f);
         glRotatef(yaw, 0.0f, 1.0f, 0.0f);
         glTranslatef(position.x, position.y, position.z);
+        
+        FloatBuffer lightPosition = BufferUtils.createFloatBuffer(4);
+        lightPosition.put(lPosition.x).put(
+        lPosition.y).put(lPosition.z).put(1.0f).flip();
+        glLight(GL_LIGHT0, GL_POSITION, lightPosition);
+        
     }
     /**
     * Method: gameLoop
@@ -194,7 +227,7 @@ public class FPCameraController {
         float lastTime = 0f;
         long time = 0;
         float mouseSensitivity = 0.09f;
-        float movementSpeed = 0.35f;
+        float movementSpeed = 3f;
         Mouse.setGrabbed(true);
         while (!Display.isCloseRequested()
                 && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
